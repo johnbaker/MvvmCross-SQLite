@@ -156,7 +156,7 @@ namespace TestSqliteWpf
 #endif
 
                 // Act
-                conn = factory.CreateEx(null);
+				conn = factory.CreateEx((SQLiteConnectionOptions)null);
             }
             finally // Cleanup in Finally
             {
