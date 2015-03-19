@@ -194,6 +194,239 @@ namespace TestSqliteWpf
             }
         }
 
+#if __IOS__
+
+// Test that a database without a password can be reopen successfully
+[Test]
+public void ShouldBeAbleToReadReopenedDatabaseWithoutPassword()
+{
+// Items Needing Cleanup
+ISQLiteConnection conn = null;
+string expectedFilePath = null;
+string password = Guid.NewGuid ().ToString ();
+try
+{
+// Arrange
+ISQLiteConnectionFactoryEx factory = new MvxTouchSQLiteConnectionFactory();
+string filename = Guid.NewGuid().ToString() + ".db";
+expectedFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), filename);
+
+SQLiteConnectionOptions options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = null };
+conn = factory.CreateEx(options);
+conn.CreateTable<Person>();
+conn.Insert(new Person() { FirstName = "Bob", LastName = "Smith" });
+Person expected = conn.Table<Person>().FirstOrDefault();
+
+Assert.That(expected.FirstName, Is.EqualTo("Bob"));
+Assert.That(expected.LastName, Is.EqualTo("Smith"));
+
+if(conn != null) 
+conn.Close();
+
+// Act
+options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = null };
+conn = factory.CreateEx(options);
+expected = conn.Table<Person>().FirstOrDefault();
+
+// Asset
+Assert.That(expected.FirstName, Is.EqualTo("Bob"));
+Assert.That(expected.LastName, Is.EqualTo("Smith"));
+}
+finally // Cleanup in Finally
+{
+if (conn != null)
+conn.Close();
+
+if (!string.IsNullOrWhiteSpace(expectedFilePath) && File.Exists(expectedFilePath))
+File.Delete(expectedFilePath);
+}
+
+}
+// Test that a database with a password can be reopen successfully
+[Test]
+public void ShouldBeAbleToReadReopenedDatabaseWhenUsingCorrectPassword()
+{
+// Items Needing Cleanup
+ISQLiteConnection conn = null;
+string expectedFilePath = null;
+string password = Guid.NewGuid ().ToString ();
+try
+{
+// Arrange
+ISQLiteConnectionFactoryEx factory = new MvxTouchSQLiteConnectionFactory();
+string filename = Guid.NewGuid().ToString() + ".db";
+expectedFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), filename);
+
+SQLiteConnectionOptions options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = password };
+conn = factory.CreateEx(options);
+conn.CreateTable<Person>();
+conn.Insert(new Person() { FirstName = "Bob", LastName = "Smith" });
+Person expected = conn.Table<Person>().FirstOrDefault();
+
+Assert.That(expected.FirstName, Is.EqualTo("Bob"));
+Assert.That(expected.LastName, Is.EqualTo("Smith"));
+
+if(conn != null) 
+conn.Close();
+
+// Act
+options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = password };
+conn = factory.CreateEx(options);
+expected = conn.Table<Person>().FirstOrDefault();
+
+// Asset
+Assert.That(expected.FirstName, Is.EqualTo("Bob"));
+Assert.That(expected.LastName, Is.EqualTo("Smith"));
+
+}
+finally // Cleanup in Finally
+{
+if (conn != null)
+conn.Close();
+
+if (!string.IsNullOrWhiteSpace(expectedFilePath) && File.Exists(expectedFilePath))
+File.Delete(expectedFilePath);
+}
+
+}
+
+// Test that a database with a password fails to open with different password
+[Test]
+[ExpectedException("Community.SQLite.SQLiteException", MatchType = MessageMatch.Contains, ExpectedMessage = "file is encrypted or is not a database")]
+public void ShouldThrowSQLiteExceptionWhenOpeningEncryptedDatabaseWithDifferentPassword()
+{
+// Items Needing Cleanup
+ISQLiteConnection conn = null;
+string expectedFilePath = null;
+try
+{
+// Arrange
+ISQLiteConnectionFactoryEx factory = new MvxTouchSQLiteConnectionFactory();
+string filename = Guid.NewGuid().ToString() + ".db";
+expectedFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), filename);
+
+SQLiteConnectionOptions options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = Guid.NewGuid ().ToString () };
+conn = factory.CreateEx(options);
+conn.CreateTable<Person>();
+conn.Insert(new Person() { FirstName = "Bob", LastName = "Smith" });
+
+if(conn != null) 
+conn.Close();
+
+// Act
+options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = Guid.NewGuid ().ToString () };
+conn = factory.CreateEx(options);
+Person expected = conn.Table<Person>().FirstOrDefault();
+
+// Asset
+Assert.That(expected.FirstName, Is.EqualTo("Bob"));
+Assert.That(expected.LastName, Is.EqualTo("Smith"));
+}
+finally // Cleanup in Finally
+{
+if (conn != null)
+conn.Close();
+
+if (!string.IsNullOrWhiteSpace(expectedFilePath) && File.Exists(expectedFilePath))
+File.Delete(expectedFilePath);
+}
+
+}
+
+// Test that a database with a password fails to open without a password
+[Test]
+[ExpectedException("Community.SQLite.SQLiteException", MatchType = MessageMatch.Contains, ExpectedMessage = "file is encrypted or is not a database")]
+public void ShouldThrowSQLiteExceptionWhenOpeningEncryptedDatabaseWithoutPassword()
+{
+// Items Needing Cleanup
+ISQLiteConnection conn = null;
+string expectedFilePath = null;
+			string password = Guid.NewGuid ().ToString ();
+try
+{
+// Arrange
+ISQLiteConnectionFactoryEx factory = new MvxTouchSQLiteConnectionFactory();
+string filename = Guid.NewGuid().ToString() + ".db";
+expectedFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), filename);
+
+SQLiteConnectionOptions options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = password };
+conn = factory.CreateEx(options);
+conn.CreateTable<Person>();
+conn.Insert(new Person() { FirstName = "Bob", LastName = "Smith" });
+
+if(conn != null) 
+conn.Close();
+
+// Act
+options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = null };
+conn = factory.CreateEx(options);
+Person expected = conn.Table<Person>().FirstOrDefault();
+
+// Asset
+Assert.That(expected.FirstName, Is.EqualTo("Bob"));
+Assert.That(expected.LastName, Is.EqualTo("Smith"));
+}
+finally // Cleanup in Finally
+{
+if (conn != null)
+conn.Close();
+
+if (!string.IsNullOrWhiteSpace(expectedFilePath) && File.Exists(expectedFilePath))
+File.Delete(expectedFilePath);
+}
+
+}
+
+// Test that incorrect passwords on a non-encrypted database throws
+[ExpectedException("Community.SQLite.SQLiteException", MatchType = MessageMatch.Contains, ExpectedMessage = "file is encrypted or is not a database")]
+[Test]
+public void ShouldThrowSQLiteExceptionWhenOpeningNonEncryptedDatabaseWithPassword()
+{
+// Items Needing Cleanup
+ISQLiteConnection conn = null;
+string expectedFilePath = null;
+try
+{
+// Arrange
+ISQLiteConnectionFactoryEx factory = new MvxTouchSQLiteConnectionFactory();
+string filename = Guid.NewGuid().ToString() + ".db";
+expectedFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), filename);
+
+SQLiteConnectionOptions options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = null };
+conn = factory.CreateEx(options);
+conn.CreateTable<Person>();
+conn.Insert(new Person() { FirstName = "Bob", LastName = "Smith" });
+Person expected = conn.Table<Person>().FirstOrDefault();
+
+Assert.That(expected.FirstName, Is.EqualTo("Bob"));
+Assert.That(expected.LastName, Is.EqualTo("Smith"));
+
+if(conn != null) 
+conn.Close();
+
+// Act
+options = new SQLiteConnectionOptions { Address = filename, Type = SQLiteConnectionOptions.DatabaseType.File, Password = Guid.NewGuid ().ToString () };
+conn = factory.CreateEx(options);
+expected = conn.Table<Person>().FirstOrDefault();
+
+// Asset
+Assert.That(expected.FirstName, Is.EqualTo("Bob"));
+Assert.That(expected.LastName, Is.EqualTo("Smith"));
+
+}
+finally // Cleanup in Finally
+{
+if (conn != null)
+conn.Close();
+
+if (!string.IsNullOrWhiteSpace(expectedFilePath) && File.Exists(expectedFilePath))
+File.Delete(expectedFilePath);
+}
+
+}
+
+#endif
+
         public class Person
         {
             public string FirstName { get; set; }

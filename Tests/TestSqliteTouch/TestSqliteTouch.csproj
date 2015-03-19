@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{CF80726C-861B-426D-A287-CAE1F95CC1E5}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
@@ -93,8 +91,8 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default.png" />
-    <BundleResource Include="Resources\Default@2x.png" />
-    <BundleResource Include="Resources\Default-568h@2x.png" />
+    <BundleResource Include="Resources\Default%402x.png" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Cirrious.CrossCore">
@@ -128,11 +126,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Sqlite\Cirrious.MvvmCross.Community.Plugins.Sqlite.Touch\Cirrious.MvvmCross.Community.Plugins.Sqlite.Touch.csproj">
-      <Project>{4d6572a6-628a-4c50-9056-d3a9a42c8d7f}</Project>
+      <Project>{4D6572A6-628A-4C50-9056-D3A9A42C8D7F}</Project>
       <Name>Cirrious.MvvmCross.Community.Plugins.Sqlite.Touch</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Sqlite\Cirrious.MvvmCross.Community.Plugins.Sqlite\Cirrious.MvvmCross.Community.Plugins.Sqlite.csproj">
-      <Project>{72654b8a-5f78-4bdf-bfbb-057dddf314f1}</Project>
+      <Project>{72654B8A-5F78-4BDF-BFBB-057DDDF314F1}</Project>
       <Name>Cirrious.MvvmCross.Community.Plugins.Sqlite</Name>
     </ProjectReference>
   </ItemGroup>

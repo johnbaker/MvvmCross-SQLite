@@ -29,7 +29,7 @@ namespace Cirrious.MvvmCross.Community.Plugins.Sqlite.WindowsStore
             return Path.Combine(path1, path2);
         }
 
-        protected override ISQLiteConnection CreateSQLiteConnection(string databasePath, bool storeDateTimeAsTicks)
+        protected override ISQLiteConnection CreateSQLiteConnection(string databasePath, bool storeDateTimeAsTicks, string password = null)
         {
             return new SQLiteConnection(databasePath, storeDateTimeAsTicks);
         }

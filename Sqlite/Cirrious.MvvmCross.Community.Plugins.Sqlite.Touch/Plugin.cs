@@ -7,6 +7,9 @@
 
 using Cirrious.CrossCore;
 using Cirrious.CrossCore.Plugins;
+using ObjCRuntime;
+
+[assembly: LinkWith ("libsqlcipher.a", LinkTarget.Simulator | LinkTarget.ArmV6 | LinkTarget.ArmV7, ForceLoad = true)]
 
 namespace Cirrious.MvvmCross.Community.Plugins.Sqlite.Touch
 {
